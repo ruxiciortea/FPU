@@ -24,9 +24,9 @@ architecture Behavioral of shift_unit_test_bench is
 
 begin
     
-    selection_signal <= "001";
-    data_in_1_signal <= B"0_10011001_00000000000000000101111";
-    data_in_2_signal <= B"0_10010110_00000000000000001010001";
+    selection_signal <= "100";
+    data_in_1_signal <= B"0_00000001_01111110011110101110001";
+    data_in_2_signal <= B"0_11111101_10011000101000111101100";
     
     uut: shift_unit port map (
         selection => selection_signal,

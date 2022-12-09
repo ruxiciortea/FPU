@@ -15,9 +15,6 @@ end arithmetic_unit;
 
 architecture Behavioural of arithmetic_unit is
 
-    signal operation_result: std_logic_vector(22 downto 0);
-    signal sign: std_logic;
-
 begin
 
     process(operation_select, data_in_1, data_in_2)
@@ -28,6 +25,10 @@ begin
         variable sign_1: std_logic;
         variable sign_2: std_logic;
         variable operation: std_logic;
+        variable operation_result: std_logic_vector(22 downto 0);
+        variable sign: std_logic;
+        variable new_exponent: std_logic_vector(7 downto 0);
+
     
     begin 
         mantissa_1 := data_in_1(22 downto 0);
@@ -35,11 +36,13 @@ begin
         sign_1 := data_in_1(31);
         sign_2 := data_in_2(31);
         
+        new_exponent := data_in_1(30 downto 23);
+        
         case operation_select is
             when '0' => -- addition
                 if sign_1 = sign_2 then
-                    operation_result <= mantissa_1 + mantissa_2;
-                    sign <= sign_1;
+                    operation_result := mantissa_1 + mantissa_2;
+                    sign := sign_1;
                 else
                     if mantissa_2 > mantissa_1 then
                         aux := mantissa_1;
@@ -50,12 +53,12 @@ begin
                         sign_2 := data_in_1(31);
                     end if;
                     
-                    operation_result <= mantissa_1 - mantissa_2;
+                    operation_result := mantissa_1 - mantissa_2;
                     
                     if mantissa_1 > mantissa_2 then
-                        sign <= sign_1;
+                        sign := sign_1;
                     else
-                        sign <= not sign_1;
+                        sign := not sign_1;
                     end if;
                 end if;
             when '1' => -- subtraction              
@@ -69,23 +72,25 @@ begin
                         sign_2 := data_in_1(31);
                     end if;
                     
-                    operation_result <= mantissa_1 - mantissa_2;    
+                    operation_result := mantissa_1 - mantissa_2;    
                                  
                     if mantissa_1 > mantissa_2 then
-                        sign <= sign_1;
+                        sign := sign_1;
                     else
-                        sign <= not sign_1;
+                        sign := not sign_1;
                     end if;
                 else
-                    operation_result <= mantissa_1 + mantissa_2;
-                    sign <= sign_1;
+                    operation_result := mantissa_1 + mantissa_2;
+                    sign := sign_1;
                 end if;                
             when others => 
-                operation_result <= (others => '0');
-                sign <= '0';
+                operation_result := (others => '0');
+                sign := '0';
         end case;
+        
+        
+        
+        result <= sign & new_exponent & operation_result;
     end process;
-    
-    result <= sign & data_in_1(30 downto 23) & operation_result;
 
 end Behavioural;
