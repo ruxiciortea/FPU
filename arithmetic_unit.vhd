@@ -18,7 +18,7 @@ architecture Behavioural of arithmetic_unit is
 begin
 
     process(operation_select, data_in_1, data_in_2)
-    
+        
         variable mantissa_1: std_logic_vector(22 downto 0);
         variable mantissa_2: std_logic_vector(22 downto 0);
         variable aux: std_logic_vector(22 downto 0);
@@ -28,7 +28,6 @@ begin
         variable operation_result: std_logic_vector(22 downto 0);
         variable sign: std_logic;
         variable new_exponent: std_logic_vector(7 downto 0);
-
     
     begin 
         mantissa_1 := data_in_1(22 downto 0);
@@ -49,17 +48,12 @@ begin
                         mantissa_1 := mantissa_2;
                         mantissa_2 := aux;
                         
-                        sign_1 := data_in_2(31);
-                        sign_2 := data_in_1(31);
+                        sign := sign_2;
+                    else 
+                        sign := sign_1;
                     end if;
                     
                     operation_result := mantissa_1 - mantissa_2;
-                    
-                    if mantissa_1 > mantissa_2 then
-                        sign := sign_1;
-                    else
-                        sign := not sign_1;
-                    end if;
                 end if;
             when '1' => -- subtraction              
                 if sign_1 = sign_2 then   
@@ -68,17 +62,12 @@ begin
                         mantissa_1 := mantissa_2;
                         mantissa_2 := aux;
                         
-                        sign_1 := data_in_2(31);
-                        sign_2 := data_in_1(31);
+                        sign := sign_2;
+                    else
+                        sign := sign_1;
                     end if;
                     
                     operation_result := mantissa_1 - mantissa_2;    
-                                 
-                    if mantissa_1 > mantissa_2 then
-                        sign := sign_1;
-                    else
-                        sign := not sign_1;
-                    end if;
                 else
                     operation_result := mantissa_1 + mantissa_2;
                     sign := sign_1;
@@ -87,8 +76,6 @@ begin
                 operation_result := (others => '0');
                 sign := '0';
         end case;
-        
-        
         
         result <= sign & new_exponent & operation_result;
     end process;
