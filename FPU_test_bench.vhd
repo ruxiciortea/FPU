@@ -26,7 +26,7 @@ begin
 --    operand_2_in <= B"1_10000010_00000011110101110000110"; -- 8
     operand_1_in <= B"0_10000100_11000110011110101110010"; -- 56.81
     operand_2_in <= B"0_10000101_00010001110101110000110"; -- 68.46
-    operation_signal <= '1';
+    operation_signal <= '0';
 
     uut: FPU port map(
         operand_1 => operand_1_in,

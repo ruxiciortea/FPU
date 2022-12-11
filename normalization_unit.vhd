@@ -6,9 +6,11 @@ use IEEE.std_logic_unsigned.ALL;
 entity normalization_unit is
     Port ( 
         data_in: in std_logic_vector(31 downto 0);
+        operand_in: in std_logic_vector(31 downto 0);
         overflow: in std_logic;
         performed_operation: in std_logic;
-        data_out: out std_logic_vector(31 downto 0)
+        data_out: out std_logic_vector(31 downto 0);
+        exceptions: out std_logic_vector(1 downto 0)
     );
 end normalization_unit;
 
@@ -19,14 +21,17 @@ begin
     process (data_in, overflow, performed_operation)
     
         variable data_out_aux: std_logic_vector(31 downto 0);
+        variable operand_exponent_in: std_logic_vector(7 downto 0);
     
     begin        
+        operand_exponent_in := operand_in(30 downto 23) - "00000001";
+    
         if performed_operation = '0' then
             if overflow = '1' then 
-                data_out <= data_in;
+                data_out_aux := data_in;
             else
                 -- shift left once
-                data_out <= data_in(31) & data_in(30 downto 23) - "00000001" & data_in(21 downto 0) & '0';
+                data_out_aux := data_in(31) & data_in(30 downto 23) - "00000001" & data_in(21 downto 0) & '0';
             end if;
         else
             -- shift left until no leading zeros and then one more time
@@ -79,6 +84,14 @@ begin
             elsif data_in(0) = '1' then
                 data_out_aux := data_out_aux(31) & data_out_aux(30 downto 23) - "00010110" & data_out_aux(0 downto 0) & "0000000000000000000000";
             end if;            
+        end if;
+        
+        if unsigned(data_in(22 downto 0)) = 0 then
+            exceptions <= "01"; -- zero detection
+        elsif performed_operation = '0' and data_out_aux(30 downto 0) < operand_exponent_in then
+            exceptions <= "10"; -- overflow detection
+        elsif performed_operation = '1' and data_out_aux(30 downto 0) > operand_exponent_in then
+            exceptions <= "11"; -- underflow detection
         end if;
         
         data_out <= data_out_aux;
