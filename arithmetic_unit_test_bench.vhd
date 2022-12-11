@@ -22,8 +22,8 @@ architecture Behavioral of arithmetic_unit_test_bench is
 begin
 
     operation_select_signal <= '0';
-    data_in_1_signal <= B"0_10000110_11001100010100011110110";
-    data_in_2_signal <= B"0_10000110_01011111100111101011100";
+    data_in_1_signal <= B"0_10000011_10010000001101010100000"; -- 9
+    data_in_2_signal <= B"0_10000011_10000001111010111000011"; -- 8
 
     uut: arithmetic_unit port map(
         operation_select => operation_select_signal,

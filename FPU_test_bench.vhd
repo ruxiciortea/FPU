@@ -22,8 +22,8 @@ architecture Behavioral of FPU_test_bench is
 
 begin
 
-    operand_1_in <= B"1_10000010_00100000011010101000000"; -- 9
-    operand_2_in <= B"1_10000010_00000011110101110000110"; -- 8
+    operand_1_in <= B"0_10000010_00100000011010101000000"; -- 9
+    operand_2_in <= B"0_10000010_00000011110101110000110"; -- 8
     operation_signal <= '1';
 
     uut: FPU port map(

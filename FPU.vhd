@@ -12,21 +12,6 @@ end FPU;
 
 architecture Structural of FPU is
 
---    component data_register is
---        Port (
---            clk: in std_logic;
---            enable: in std_logic;
---            absolute_write_data: in std_logic_vector(31 downto 0);
---            write_data: in std_logic_vector(15 downto 0);
---            write_address: in std_logic;
---            read_address: in std_logic;
---            write_selection: in std_logic_vector(1 downto 0);
---            read_selection: in std_logic_vector(1 downto 0);
---            absolute_read_data: out std_logic_vector(31 downto 0);
---            read_data: out std_logic_vector(15 downto 0)
---        );
---    end component;
-
     component comparison_unit is
         Port (
             data_in_1: in std_logic_vector(31 downto 0);
@@ -50,19 +35,12 @@ architecture Structural of FPU is
             operation_select: in std_logic;
             data_in_1: in std_logic_vector(31 downto 0);
             data_in_2: in std_logic_vector(31 downto 0);
+            performed_operation: out std_logic;
+            overflow: out std_logic;
             result: out std_logic_vector(31 downto 0)
         );
     end component;
 
---    -- data registers signals
---    signal operand_1_out: std_logic_vector(31 downto 0);
---    signal operand_2_out: std_logic_vector(31 downto 0);
-    
---    signal half_operand_1_in: std_logic_vector(16 downto 0);
---    signal half_operand_2_in: std_logic_vector(16 downto 0);
---    signal half_operand_1_out: std_logic_vector(16 downto 0);
---    signal half_operand_2_out: std_logic_vector(16 downto 0);
-    
     -- comparison unit signals
     signal comparison_result: std_logic_vector(2 downto 0);
     
@@ -72,6 +50,8 @@ architecture Structural of FPU is
     signal operation_result: std_logic_vector(31 downto 0);   
     
     -- arithmetic unit signals
+    signal performed_operation_signal: std_logic;
+    signal detected_overflow: std_logic;
     
 begin
     
@@ -93,6 +73,8 @@ begin
         operation_select => operation,
         data_in_1 => shifted_operand_1,
         data_in_2 => shifted_operand_2,
+        performed_operation => performed_operation_signal,
+        overflow => detected_overflow,
         result => final_result
     );
 
