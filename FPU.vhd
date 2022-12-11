@@ -40,6 +40,15 @@ architecture Structural of FPU is
             result: out std_logic_vector(31 downto 0)
         );
     end component;
+    
+    component normalization_unit is
+        Port ( 
+            data_in: in std_logic_vector(31 downto 0);
+            overflow: in std_logic;
+            performed_operation: in std_logic;
+            data_out: out std_logic_vector(31 downto 0)
+        );
+    end component;
 
     -- comparison unit signals
     signal comparison_result: std_logic_vector(2 downto 0);
@@ -47,9 +56,9 @@ architecture Structural of FPU is
     -- shift unit signals
     signal shifted_operand_1: std_logic_vector(31 downto 0);    
     signal shifted_operand_2: std_logic_vector(31 downto 0);   
-    signal operation_result: std_logic_vector(31 downto 0);   
     
     -- arithmetic unit signals
+    signal operation_result: std_logic_vector(31 downto 0);
     signal performed_operation_signal: std_logic;
     signal detected_overflow: std_logic;
     
@@ -75,7 +84,14 @@ begin
         data_in_2 => shifted_operand_2,
         performed_operation => performed_operation_signal,
         overflow => detected_overflow,
-        result => final_result
+        result => operation_result
+    );
+    
+    normalization: normalization_unit port map(
+        data_in => operation_result,
+        overflow => detected_overflow,
+        performed_operation => performed_operation_signal,
+        data_out => final_result
     );
 
 end Structural;
