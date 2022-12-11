@@ -62,7 +62,7 @@ begin
                         mantissa_1 := mantissa_2;
                         mantissa_2 := aux;
                         
-                        sign := sign_2;
+                        sign := not sign_1;
                     else
                         sign := sign_1;
                     end if;
