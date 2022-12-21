@@ -20,9 +20,15 @@ architecture Structural of comparison_unit_test_bench is
 
 begin
 
-    data_in_1_signal <= B"0_00000111_00000000000000000101111" after 100 ns;
-    data_in_2_signal <= B"0_11111111_00000000000000000101111" after 100 ns;
+--    data_in_1_signal <= B"0_00000111_00000000000000000101111" after 100 ns;
+--    data_in_2_signal <= B"0_11111111_00000000000000000101111" after 100 ns;
 
+--    data_in_1_signal <= B"0_01111000_01000111101011100001010"; -- 0.01
+--    data_in_2_signal <= B"0_10011101_00000000000000000000000"; -- 1073741824.0
+    
+    data_in_1_signal <= x"00000000";
+    data_in_2_signal <= x"00000000";
+    
     uut: comparison_unit port map (
         data_in_1 => data_in_1_signal,
         data_in_2 => data_in_2_signal,

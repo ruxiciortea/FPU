@@ -86,9 +86,12 @@ begin
             end if;            
         end if;
         
-        if unsigned(data_in(22 downto 0)) = 0 then
-            exceptions <= "01"; -- zero detection
-        elsif performed_operation = '0' and data_out_aux(30 downto 0) < operand_exponent_in then
+        if data_in = x"00000000" or data_in = x"80000000" then
+            exceptions <= "01";
+            data_out_aux := data_in;
+        end if;
+        
+        if performed_operation = '0' and data_out_aux(30 downto 0) < operand_exponent_in then
             exceptions <= "10"; -- overflow detection
         elsif performed_operation = '1' and data_out_aux(30 downto 0) > operand_exponent_in then
             exceptions <= "11"; -- underflow detection

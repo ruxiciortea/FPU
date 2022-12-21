@@ -15,7 +15,7 @@ end comparison_unit;
 architecture Behavioural of comparison_unit is
 
     signal result_signal: std_logic_vector(2 downto 0);
-    
+    signal diff: std_logic_vector(7 downto 0);
 begin
 
     process(data_in_1, data_in_2) 
@@ -30,7 +30,7 @@ begin
             result_signal <= "000";
         elsif (exponent_1 > exponent_2) then
             differerence := exponent_1 - exponent_2;
-            
+            diff <= differerence;
             if differerence < 23 then
                 result_signal <= "001";
             else 

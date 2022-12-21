@@ -14,9 +14,7 @@ entity shift_unit is
 end shift_unit;
 
 architecture Behavioural of shift_unit is
- 
-    signal mantissa_signal: std_logic_vector(22 downto 0);
-    
+     
 begin
 
     process(selection, data_in_1, data_in_2)
@@ -30,8 +28,13 @@ begin
     begin 
         case selection is
             when "000" => -- (e1 = e2)
-                data_out_1 <= data_in_1(31) & (data_in_1(30 downto 23) + "00000001") & '1' & data_in_1(22 downto 1);
-                data_out_2 <= data_in_2(31) & (data_in_2(30 downto 23) + "00000001") & '1' & data_in_2(22 downto 1);
+                if data_in_1 = x"00000000" then
+                    data_out_1 <= data_in_1;
+                    data_out_2 <= data_in_2;
+                else
+                    data_out_1 <= data_in_1(31) & (data_in_1(30 downto 23) + "00000001") & '1' & data_in_1(22 downto 1);
+                    data_out_2 <= data_in_2(31) & (data_in_2(30 downto 23) + "00000001") & '1' & data_in_2(22 downto 1);
+                end if;
             when "001" => --(e1 > e2)
                 data_1_aux := data_in_1(31) & (data_in_1(30 downto 23) + "00000001") & '1' & data_in_1(22 downto 1);
                 data_2_aux := data_in_2(31) & (data_in_2(30 downto 23) + "00000001") & '1' & data_in_2(22 downto 1);
@@ -65,9 +68,7 @@ begin
             when others =>
                 data_out_1 <= (others => '0');
                 data_out_2 <= (others => '0');
-        end case;
-        
-        mantissa_signal <= mantissa;
+        end case;        
     end process;
 
 end Behavioural;

@@ -29,6 +29,7 @@ begin
         variable sign_2: std_logic;
         variable operation: std_logic;
         variable operation_result: std_logic_vector(22 downto 0);
+        variable result_exponent: std_logic_vector(7 downto 0);
         variable sign: std_logic;
         
         -- overflow detection signals
@@ -50,12 +51,22 @@ begin
         
         case operation_select is
             when '0' => -- addition
-                if sign_1 = sign_2 then
+                if data_in_1 = x"00000000" then
+                    operation_result := mantissa_2;
+                    sign := '0';
+                    detected_overflow := '0';
+                    performed_operation <= '0';
+                elsif data_in_2 = x"00000000" then
+                    operation_result := mantissa_1;
+                    sign := '0';
+                    detected_overflow := '0';
+                    performed_operation <= '0';
+                elsif sign_1 = sign_2 then
                     operation_result := mantissa_1 + mantissa_2;
                     performed_operation <= '0';
                     sign := sign_1;
                     detected_overflow := extended_sum(23);
-                else
+                elsif sign_1 /= sign_2 then
                     if mantissa_2 > mantissa_1 then
                         aux := mantissa_1;
                         mantissa_1 := mantissa_2;
@@ -69,8 +80,18 @@ begin
                     operation_result := mantissa_1 - mantissa_2;
                     performed_operation <= '1';
                 end if;
-            when '1' => -- subtraction              
-                if sign_1 = sign_2 then   
+            when '1' => -- subtraction  
+                if data_in_1 = x"00000000" then
+                    operation_result := mantissa_2;
+                    sign := '1';
+                    detected_overflow := '0';
+                    performed_operation <= '1';
+                elsif data_in_2 = x"00000000" then
+                    operation_result := mantissa_1;
+                    sign := '0';
+                    detected_overflow := '0'; 
+                    performed_operation <= '1';           
+                elsif sign_1 = sign_2 then   
                     if mantissa_2 > mantissa_1 then
                         aux := mantissa_1;
                         mantissa_1 := mantissa_2;
@@ -83,7 +104,7 @@ begin
                     
                     operation_result := mantissa_1 - mantissa_2;  
                     performed_operation <= '1';  
-                else
+                elsif sign_1 /= sign_2 then 
                     operation_result := mantissa_1 + mantissa_2;
                     performed_operation <= '0';
                     sign := sign_1;
@@ -93,9 +114,16 @@ begin
                 operation_result := (others => '0');
                 sign := '0';
         end case;
-                
+          
+        if data_in_1(30 downto 23) = x"00" then
+            result_exponent := data_in_2(30 downto 23);
+        elsif data_in_2(30 downto 23) = x"00" then
+            result_exponent := data_in_1(30 downto 23);
+        else
+            result_exponent := data_in_1(30 downto 23);
+        end if;      
         overflow <= detected_overflow;
-        result <= sign & data_in_1(30 downto 23) & operation_result;
+        result <= sign & result_exponent & operation_result;
     end process;
 
 end Behavioural;
