@@ -19,11 +19,11 @@ architecture Behavioral of FPU_test_bench is
     signal operand_2_in: std_logic_vector(31 downto 0);
     signal operation_signal: std_logic;
     signal operation_result: std_logic_vector(31 downto 0);
-
+    
 begin
-
---    operand_1_in <= B"1_10000010_00100000011010101000000"; -- 9.01
---    operand_2_in <= B"1_10000010_00000011110101110000110"; -- 8.12   
+    
+--    operand_1_in <= B"1_10000010_00100000011010101000000"; -- 9.01   
+--    operand_2_in <= B"1_10000010_00000011110101110000110"; -- 8.12
 
 --    operand_1_in <= B"0_10000100_11000110011110101110010"; -- 56.81
 --    operand_2_in <= B"0_10000101_00010001110101110000110"; -- 68.46
@@ -33,7 +33,7 @@ begin
     
     operand_2_in <= x"00000000"; -- 0
     operand_1_in <= x"00000000"; -- 0
-    
+
     operation_signal <= '1';
 
     uut: FPU port map(

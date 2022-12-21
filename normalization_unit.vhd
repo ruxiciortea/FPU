@@ -9,8 +9,7 @@ entity normalization_unit is
         operand_in: in std_logic_vector(31 downto 0);
         overflow: in std_logic;
         performed_operation: in std_logic;
-        data_out: out std_logic_vector(31 downto 0);
-        exceptions: out std_logic_vector(1 downto 0)
+        data_out: out std_logic_vector(31 downto 0)
     );
 end normalization_unit;
 
@@ -84,18 +83,11 @@ begin
             elsif data_in(0) = '1' then
                 data_out_aux := data_out_aux(31) & data_out_aux(30 downto 23) - "00010110" & data_out_aux(0 downto 0) & "0000000000000000000000";
             end if;            
-        end if;
+        end if;     
         
         if data_in = x"00000000" or data_in = x"80000000" then
-            exceptions <= "01";
             data_out_aux := data_in;
-        end if;
-        
-        if performed_operation = '0' and data_out_aux(30 downto 0) < operand_exponent_in then
-            exceptions <= "10"; -- overflow detection
-        elsif performed_operation = '1' and data_out_aux(30 downto 0) > operand_exponent_in then
-            exceptions <= "11"; -- underflow detection
-        end if;
+        end if;   
         
         data_out <= data_out_aux;
     end process;
